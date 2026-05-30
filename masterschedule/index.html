@@ -276,17 +276,19 @@
       font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
     }
 
-    .sticky-phase, .sticky-id, .sticky-task {
+    .sticky-phase {
       position: sticky;
+      left: 0;
       z-index: 30;
+      width: var(--phase-w);
+      min-width: var(--phase-w);
       box-shadow: 2px 0 5px rgba(15, 23, 42, 0.04);
     }
 
-    .sticky-phase { left: 0; width: var(--phase-w); min-width: var(--phase-w); }
-    .sticky-id { left: var(--phase-w); width: var(--id-w); min-width: var(--id-w); text-align: center; }
-    .sticky-task { left: calc(var(--phase-w) + var(--id-w)); width: var(--task-w); min-width: var(--task-w); }
+    .col-id { width: var(--id-w); min-width: var(--id-w); text-align: center; }
+    .col-task { width: var(--task-w); min-width: var(--task-w); }
 
-    thead .sticky-phase, thead .sticky-id, thead .sticky-task {
+    thead .sticky-phase {
       z-index: 40;
       background: #f1f5f9;
     }
@@ -830,14 +832,14 @@ POC,42,POC取引実施、精算検証、業務検証,,,,,,,,,,,,,,,,,,,,,,,,,,,,
       $("#thead").innerHTML = `
         <tr>
           <th class="sticky-phase">フェーズ</th>
-          <th class="sticky-id">#</th>
-          <th class="sticky-task">タスク名</th>
+          <th class="col-id">#</th>
+          <th class="col-task">タスク名</th>
           ${months.map((month) => `<th colspan="4">${month}</th>`).join("")}
         </tr>
         <tr>
           <th class="sticky-phase"></th>
-          <th class="sticky-id"></th>
-          <th class="sticky-task"></th>
+          <th class="col-id"></th>
+          <th class="col-task"></th>
           ${Array.from({ length: 44 }, (_, index) => `<th>w${(index % 4) + 1}</th>`).join("")}
         </tr>
       `;
@@ -885,12 +887,12 @@ POC,42,POC取引実施、精算検証、業務検証,,,,,,,,,,,,,,,,,,,,,,,,,,,,
         tr.appendChild(phaseTd);
 
         const idTd = document.createElement("td");
-        idTd.className = "sticky-id id-cell";
+        idTd.className = "col-id id-cell";
         idTd.textContent = task.id;
         tr.appendChild(idTd);
 
         const taskTd = document.createElement("td");
-        taskTd.className = "sticky-task task-cell";
+        taskTd.className = "col-task task-cell";
         const taskButton = document.createElement("button");
         taskButton.className = "task-button";
         taskButton.type = "button";
