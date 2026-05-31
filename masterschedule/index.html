@@ -349,6 +349,11 @@
     .bar-cell {
       position: relative;
       background: #fff;
+      overflow: visible;
+    }
+
+    .bar-cell:hover {
+      z-index: 60;
     }
 
     .bar {
@@ -367,6 +372,42 @@
       overflow: hidden;
       text-overflow: ellipsis;
       box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45), 0 3px 10px rgba(15, 23, 42, 0.08);
+    }
+
+    .bar.compact {
+      padding: 0 4px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 10px;
+      letter-spacing: 0;
+    }
+
+    .bar:hover,
+    .bar:focus-visible {
+      overflow: visible;
+      z-index: 35;
+    }
+
+    .bar:hover::after,
+    .bar:focus-visible::after {
+      content: attr(data-full-title);
+      position: absolute;
+      left: 0;
+      top: calc(100% + 7px);
+      width: max-content;
+      max-width: min(520px, 70vw);
+      white-space: normal;
+      text-align: left;
+      color: #0f172a;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      box-shadow: 0 12px 28px rgba(15, 23, 42, 0.16);
+      padding: 8px 10px;
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 12px;
+      font-weight: 800;
+      line-height: 1.35;
+      pointer-events: none;
     }
 
     .bar:focus-visible, .task-button:focus-visible, button:focus-visible {
@@ -814,6 +855,10 @@ POC,42,POC取引実施、精算検証、業務検証,,,,,,,,,,,,,,,,,,,,,,,,,,,,
       return start === end ? weekLabel(start) : `${weekLabel(start)} 〜 ${weekLabel(end)}`;
     }
 
+    function barLabel(task, span) {
+      return span <= 2 ? `#${task.id}` : task.title;
+    }
+
     function themeFor(phase) {
       return themes[phase] || fallbackTheme;
     }
@@ -911,10 +956,12 @@ POC,42,POC取引実施、精算検証、業務検証,,,,,,,,,,,,,,,,,,,,,,,,,,,,
             td.colSpan = span;
             const bar = document.createElement("button");
             bar.type = "button";
-            bar.className = "bar";
+            bar.className = `bar${span <= 2 ? " compact" : ""}`;
             bar.style.background = theme.bar;
             bar.title = `${task.title}\n${rangeLabel(range.start, range.end)}`;
-            bar.textContent = span > 1 ? task.title : `#${task.id}`;
+            bar.dataset.fullTitle = `${task.title}｜${rangeLabel(range.start, range.end)}`;
+            bar.setAttribute("aria-label", `${task.title} ${rangeLabel(range.start, range.end)}`);
+            bar.textContent = barLabel(task, span);
             bar.addEventListener("click", () => showModal(task));
             td.appendChild(bar);
             tr.appendChild(td);
